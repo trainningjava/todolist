@@ -52,7 +52,7 @@ public class TaskController {
 
         Utils.copyNonNullProperties(taskModel, task);
 
-        taskRepository.save(taskModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskModel);
+        var taskUpdated = taskRepository.save(task);
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskUpdated);
     }
 }

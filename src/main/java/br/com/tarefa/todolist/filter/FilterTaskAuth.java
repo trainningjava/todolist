@@ -28,6 +28,11 @@ public class FilterTaskAuth extends OncePerRequestFilter {
             // Pegar a autenticação (usuário e senha)
             var authorization = request.getHeader("Authorization");
 
+            if (authorization == null) {
+                response.sendError(401);
+                return;
+            }
+
             var authEncoded = authorization.substring("Basic".length()).trim();
 
             // decode Base64

@@ -2,13 +2,18 @@ package br.com.tarefa.todolist.task;
 
 import br.com.tarefa.todolist.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -19,7 +24,7 @@ public class TaskController {
     private ITaskRepository taskRepository;
 
     @PostMapping("/")
-    public ResponseEntity create(@RequestBody TaskModel taskModel, HttpServletRequest request) {
+    public ResponseEntity create(@Valid @RequestBody  TaskModel taskModel, HttpServletRequest request) {
 
         var idUser = request.getAttribute("idUser");
         taskModel.setIdUser((UUID) idUser);
@@ -50,9 +55,32 @@ public class TaskController {
 
         var task = taskRepository.findById(id).orElse(null);
 
+        if (task == null) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tarefa não encontrada");
+        }
+
+        var idUser = request.getAttribute("idUser");
+        if (!task.getIdUser().equals(idUser)) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não tem permissão para alterar essa tarefa");
+        }
+
         Utils.copyNonNullProperties(taskModel, task);
 
         var taskUpdated = taskRepository.save(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(taskUpdated);
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+
 }

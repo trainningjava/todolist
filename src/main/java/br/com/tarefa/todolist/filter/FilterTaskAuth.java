@@ -24,7 +24,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
         var servletPath = request.getServletPath();
 
-        if (servletPath.startsWith("/tasks/")) {
+        if (servletPath.startsWith("/tasks/") || servletPath.startsWith("/users/")) {
             // Pegar a autenticação (usuário e senha)
             var authorization = request.getHeader("Authorization");
 
@@ -40,12 +40,12 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
             // Validar usuário
             UserModel user = userRepository.findByUsername(username);
-            if(user == null) {
+            if (user == null) {
                 response.sendError(401);
             } else {
                 // Validar senha
                 var passwordVerify = Utils.isPasswordValid(password, user.getPassword());
-                if(passwordVerify) {
+                if (passwordVerify) {
                     request.setAttribute("idUser", user.getId());
                     filterChain.doFilter(request, response);
                 } else {

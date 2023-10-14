@@ -56,12 +56,12 @@ public class TaskController {
         var task = taskRepository.findById(id).orElse(null);
 
         if (task == null) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tarefa não encontrada");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tarefa não encontrada");
         }
 
         var idUser = request.getAttribute("idUser");
         if (!task.getIdUser().equals(idUser)) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não tem permissão para alterar essa tarefa");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não tem permissão para alterar essa tarefa");
         }
 
         Utils.copyNonNullProperties(taskModel, task);

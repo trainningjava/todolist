@@ -54,8 +54,8 @@ Considere o cadastro com dados básicos:
 ```json
 {
 "id": "e1dbec7f-e193-4646-b651-3ce513bd8d15",
-"description": "Tarefa para gravar aula de Tasks do Curso de Spring Boot2",
-"title": "Gravação de aula2",
+"description": "Tarefa para gravar aula de Tasks do Curso de Spring Boot",
+"title": "Gravação de aula",
 "startAt": "2023-10-06T12:30:00",
 "endAt": "2023-10-06T15:35:00",
 "priority": "ALTA",

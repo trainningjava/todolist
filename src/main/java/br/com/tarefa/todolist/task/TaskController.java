@@ -70,6 +70,20 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskUpdated);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable UUID id) {
+
+        var task = taskRepository.findById(id).orElse(null);
+
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tarefa não encontrada");
+        } else {
+            taskRepository.deleteById(id);
+            return ResponseEntity.ok("Excluido com sucesso a tarefa");
+        }
+
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

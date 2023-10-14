@@ -1,9 +1,10 @@
 package br.com.tarefa.todolist.filter;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import br.com.tarefa.todolist.user.IUserRepository;
 import br.com.tarefa.todolist.user.UserModel;
-import jakarta.servlet.*;
+import br.com.tarefa.todolist.utils.Utils;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Base64;
 
 @Component
 public class FilterTaskAuth extends OncePerRequestFilter {
@@ -33,14 +33,8 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                 return;
             }
 
-            var authEncoded = authorization.substring("Basic".length()).trim();
+            String[] credentials = Utils.getCredential(authorization);
 
-            // decode Base64
-            byte[] authDecode = Base64.getDecoder().decode(authEncoded);
-
-            var authString = new String(authDecode);
-
-            String[] credentials = authString.split(":");
             String username = credentials[0];
             String password = credentials[1];
 
@@ -50,8 +44,8 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                 response.sendError(401);
             } else {
                 // Validar senha
-                var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
-                if(passwordVerify.verified) {
+                var passwordVerify = Utils.isPasswordValid(password, user.getPassword());
+                if(passwordVerify) {
                     request.setAttribute("idUser", user.getId());
                     filterChain.doFilter(request, response);
                 } else {

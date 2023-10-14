@@ -37,6 +37,26 @@ Considere o cadastro com dados básicos:
   * (UUID) idUser - id do usuário
   * (LocalDateTime) createdAt 
 
+API:
+* Usuário
+  * Cadastrar
+    * POST ({{urlBase}}/users/)
+  * Atualizar
+    * PUT ({{urlBase}}/users/{{UUID}})
+  * Excluir
+    * DELETE ({{urlBase}}/users/{{UUID}})
+  * Listar
+    * GET ({{urlBase}}/users/)
+* Tarefas
+  * Cadastrar
+    * POST ({{urlBase}}/tasks/) 
+  * Atualizar
+    * PUT ({{urlBase}}/tasks/)
+  * Excluir
+    * DELETE ({{urlBase}}/tasks/)
+  * Listar
+    * GET ({{urlBase}}/tasks/)
+
 ## :information_source: json
 
 * Usuário
@@ -81,6 +101,14 @@ senha = admin
 * Maven
 * H2
 * rest client postman
+
+## Deploy:
+
+Foi utilizado o site https://render.com/ para deploy da aplicação.
+
+```info
+urlBase = https://todolist-rocket-jiwt.onrender.com
+```
 
 ## :iphone: Telas
 

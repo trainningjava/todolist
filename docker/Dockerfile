@@ -4,6 +4,8 @@ EXPOSE 8080
 
 RUN ls
 
-COPY todolist-1.0.0.jar app.jar
+COPY ./docker/*.jar /app/app.jar
+WORKDIR /app
+RUN ls
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
